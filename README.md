@@ -294,7 +294,9 @@ The script will:
 
 ### Adopting an Access Point
 
-After factory reset, the AP will not auto-discover the Network Application. Use SSH set-inform:
+After factory reset, the AP will auto-discover the Network Application via DNS (`unifi` → `192.168.1.2`) — this is configured automatically by the setup script. The AP should appear in the Network Application as "Pending adoption" within a minute.
+
+If auto-discovery does not work (older firmware), use SSH set-inform as a fallback:
 
 ```sh
 ssh ubnt@<AP_IP> "/usr/bin/syswrapper.sh set-inform http://192.168.1.2:8080/inform"
