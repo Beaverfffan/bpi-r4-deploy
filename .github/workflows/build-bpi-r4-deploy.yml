@@ -410,40 +410,34 @@ jobs:
 
       - name: Publish release-pro-standard
         if: github.event.inputs.variant == 'pro'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: release-pro-standard
-          name: "BPI-R4 Pro 8X standard WiFi (latest)"
-          body: |
-            Variant: standard (WiFi) | RAM: 8GB | BPI-R4 Pro 8X
-            Commit: ${{ github.event.inputs.repo_commit || github.sha }}
-          files: rel-pro/*
+        run: |
+          gh release delete release-pro-standard --yes 2>/dev/null || true
+          gh release create release-pro-standard rel-pro/* \
+            --title "BPI-R4 Pro 8X standard WiFi (latest)" \
+            --notes "Variant: standard (WiFi) | RAM: 8GB | BPI-R4 Pro 8X
+Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish release-pro-wired
         if: github.event.inputs.variant == 'pro-wired'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: release-pro-wired
-          name: "BPI-R4 Pro 8X wired (latest)"
-          body: |
-            Variant: wired (no WiFi) | RAM: 8GB | BPI-R4 Pro 8X
-            Commit: ${{ github.event.inputs.repo_commit || github.sha }}
-          files: rel-pro-wired/*
+        run: |
+          gh release delete release-pro-wired --yes 2>/dev/null || true
+          gh release create release-pro-wired rel-pro-wired/* \
+            --title "BPI-R4 Pro 8X wired (latest)" \
+            --notes "Variant: wired (no WiFi) | RAM: 8GB | BPI-R4 Pro 8X
+Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish release-pro-unifi
         if: github.event.inputs.variant == 'pro-wired'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: release-pro-unifi
-          name: "BPI-R4 Pro 8X wired UniFi (latest)"
-          body: |
-            Variant: wired (no WiFi) | RAM: 8GB | BPI-R4 Pro 8X | UniFi stack
-            Includes: unifi-setup.sh, unifi-network-setup.sh, rc.local, rc-network.sh
-            Commit: ${{ github.event.inputs.repo_commit || github.sha }}
-          files: rel-pro-unifi/*
+        run: |
+          gh release delete release-pro-unifi --yes 2>/dev/null || true
+          gh release create release-pro-unifi rel-pro-unifi/* \
+            --title "BPI-R4 Pro 8X wired UniFi (latest)" \
+            --notes "Variant: wired (no WiFi) | RAM: 8GB | BPI-R4 Pro 8X | UniFi stack
+Includes: unifi-setup.sh, unifi-network-setup.sh, rc.local, rc-network.sh
+Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
