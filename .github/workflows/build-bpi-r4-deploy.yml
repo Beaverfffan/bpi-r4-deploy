@@ -414,8 +414,7 @@ jobs:
           gh release delete release-pro-standard --yes 2>/dev/null || true
           gh release create release-pro-standard rel-pro/* \
             --title "BPI-R4 Pro 8X standard WiFi (latest)" \
-            --notes "Variant: standard (WiFi) | RAM: 8GB | BPI-R4 Pro 8X
-Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
+            --notes "Variant: standard (WiFi) | RAM: 8GB | BPI-R4 Pro 8X | Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -425,8 +424,7 @@ Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
           gh release delete release-pro-wired --yes 2>/dev/null || true
           gh release create release-pro-wired rel-pro-wired/* \
             --title "BPI-R4 Pro 8X wired (latest)" \
-            --notes "Variant: wired (no WiFi) | RAM: 8GB | BPI-R4 Pro 8X
-Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
+            --notes "Variant: wired (no WiFi) | RAM: 8GB | BPI-R4 Pro 8X | Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -436,8 +434,6 @@ Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
           gh release delete release-pro-unifi --yes 2>/dev/null || true
           gh release create release-pro-unifi rel-pro-unifi/* \
             --title "BPI-R4 Pro 8X wired UniFi (latest)" \
-            --notes "Variant: wired (no WiFi) | RAM: 8GB | BPI-R4 Pro 8X | UniFi stack
-Includes: unifi-setup.sh, unifi-network-setup.sh, rc.local, rc-network.sh
-Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
+            --notes "Variant: wired (no WiFi) | RAM: 8GB | BPI-R4 Pro 8X | UniFi stack | Commit: ${{ github.event.inputs.repo_commit || github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
