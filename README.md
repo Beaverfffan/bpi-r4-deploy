@@ -64,6 +64,10 @@ Complete install system that runs entirely on GitHub — no Linux machine needed
 | 12 | Pro wired | 8 GB | ❌ | BPI-R4 Pro 8X, no WiFi |
 | 13 | Pro wired UniFi | 8 GB | ❌ | BPI-R4 Pro 8X, pre-configured for UniFi |
 
+> ⚠️ **BPI-R4 Pro 8X support is in early development — do not use in production.**
+> The onboard MxL862xx 8-port switch currently has no open-source driver. LAN switching is non-functional until a driver becomes available. This is a hardware vendor limitation outside our control.
+> If you install a Pro release, expect a work-in-progress experience and be prepared to participate in testing.
+
 > ℹ️ **BPI-R4 Pro 8X** uses a different NAND layout, different 10G hardware (MxL862xx 8-port switch), and different device trees than the standard BPI-R4. Use the **Pro rescue SD card** when installing on this board — standard BPI-R4 images are not compatible.
 
 ---
