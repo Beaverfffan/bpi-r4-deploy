@@ -209,7 +209,7 @@ function renderClientsTable(clients, neg_ttlm) {
             return l.signal != null && l.signal !== 0;
         }).length;
         var totalLinks = (c.links || []).length;
-        var sig = c.signal != null ? (String(c.signal) + ' dBm') : '—';
+        var sig = (c.signal != null && c.signal !== 0) ? (String(c.signal) + ' dBm') : '—';
 
         tbl.appendChild(el('tr', { style: 'border-bottom:1px solid #0a1520' },
             el('td', { style: 'padding:5px 8px;color:#ccc;font-family:monospace;font-size:11px' }, c.mac),
