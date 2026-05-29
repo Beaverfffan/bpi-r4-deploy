@@ -64,6 +64,11 @@ function render(sd, data, onRefresh) {
     // ── Daemon control ────────────────────────────────────────────────────────
     wrap.appendChild(renderDaemonRow(sd, onRefresh));
 
+    // ── Steering override ─────────────────────────────────────────────────────
+    if (sd && sd.script_present) {
+        wrap.appendChild(renderOverrideRow(sd, onRefresh));
+    }
+
     // ── Noise floor table (only when data is available) ───────────────────────
     if (sd && sd.noise && Object.keys(sd.noise).length > 0) {
         wrap.appendChild(renderNoiseTable(sd.noise));
@@ -129,6 +134,52 @@ function renderDaemonRow(sd, onRefresh) {
     d.appendChild(btn);
 
     return d;
+}
+
+// ── STEERING OVERRIDE ─────────────────────────────────────────────────────────
+
+function renderOverrideRow(sd, onRefresh) {
+    var mode = (sd && sd.mode) || 'auto';
+
+    var wrap = el('div', {
+        style: 'display:flex;align-items:center;gap:8px;padding:10px 12px;' +
+               'background:#0d1b2a;border:1px solid #1a2a3a;border-radius:4px;margin-bottom:16px'
+    });
+
+    wrap.appendChild(sp('Steering mode:', 'color:#aaa;font-size:13px;flex-shrink:0'));
+
+    var MODES = [
+        { key: 'auto',    label: 'Auto',         desc: 'SNR-weighted algorithm' },
+        { key: 'all_on',  label: 'All links ON',  desc: 'All bands always active' },
+        { key: '5g_only', label: '5G only',       desc: 'Force 5 GHz link' }
+    ];
+
+    var btnWrap = el('div', { style: 'display:flex;gap:6px' });
+
+    MODES.forEach(function(m) {
+        var active = mode === m.key;
+        var btn = el('button', {
+            title: m.desc,
+            style: 'border:1px solid ' + (active ? '#5b9bd5' : '#1a3a5a') + ';' +
+                   'background:' + (active ? '#0d2137' : 'none') + ';' +
+                   'color:' + (active ? '#5b9bd5' : '#555') + ';' +
+                   'padding:3px 12px;border-radius:3px;cursor:pointer;font-size:12px'
+        }, m.label);
+
+        if (!active) {
+            btn.onclick = function() {
+                btn.disabled = true;
+                layer3.steerd_set_mode(m.key).then(function() {
+                    if (onRefresh) onRefresh();
+                });
+            };
+        }
+
+        btnWrap.appendChild(btn);
+    });
+
+    wrap.appendChild(btnWrap);
+    return wrap;
 }
 
 // ── NOISE FLOOR TABLE ─────────────────────────────────────────────────────────

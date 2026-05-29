@@ -1368,6 +1368,14 @@ async function steerd_stop() {
     return res.ok ? l2ok(null) : l2err(res.error);
 }
 
+async function steerd_get_mode() {
+    return layer1.steerd_get_mode();
+}
+
+async function steerd_set_mode(mode) {
+    return layer1.steerd_set_mode(mode);
+}
+
 async function iw_survey_noise() {
     return layer1.iw_survey_noise();
 }
@@ -1399,6 +1407,7 @@ const Layer2 = {
     wireless_restore: layer1.wireless_restore,
     // steerd
     steerd_get_status, steerd_start, steerd_stop,
+    steerd_get_mode, steerd_set_mode,
     iw_survey_noise, hostapd_get_neg_ttlm
 };
 

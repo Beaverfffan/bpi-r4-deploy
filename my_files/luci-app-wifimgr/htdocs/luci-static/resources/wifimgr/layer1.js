@@ -1029,6 +1029,27 @@ async function steerd_stop() {
     }
 }
 
+async function steerd_get_mode() {
+    try {
+        const res = await fs.exec('/sbin/uci', ['-q', 'get', 'mlo-steerd.global.mode']);
+        const mode = (res.stdout || '').trim();
+        return ok(mode || 'auto');
+    } catch(e) {
+        return ok('auto');
+    }
+}
+
+async function steerd_set_mode(mode) {
+    try {
+        const res = await fs.exec('/bin/sh', ['-c',
+            `/sbin/uci set 'mlo-steerd.global.mode=${mode}' && /sbin/uci commit mlo-steerd`
+        ]);
+        return res.code === 0 ? ok(null) : mkErr('uci_failed');
+    } catch(e) {
+        return mkErr('exec_failed');
+    }
+}
+
 // --- Module export ---
 
 const Layer1 = {
@@ -1093,7 +1114,9 @@ const Layer1 = {
     hostapd_get_neg_ttlm,
     steerd_status,
     steerd_start,
-    steerd_stop
+    steerd_stop,
+    steerd_get_mode,
+    steerd_set_mode
 };
 
 return baseclass.extend(Layer1);
