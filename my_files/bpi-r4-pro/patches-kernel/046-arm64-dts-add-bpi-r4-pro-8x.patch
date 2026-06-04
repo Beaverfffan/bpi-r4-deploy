@@ -567,6 +567,7 @@
 +&pcie0 {
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&pcie0_pins>;
++	max-link-width = <2>;
 +	status = "okay";
 +
 +	slot0: pcie@0,0 {
@@ -585,6 +586,7 @@
 +&pcie1 {
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&pcie1_pins>;
++	max-link-width = <2>;
 +	status = "okay";
 +};
 +
@@ -592,6 +594,7 @@
 +&pcie2 {
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&pcie2_pins>;
++	max-link-width = <1>;
 +	status = "okay";
 +};
 +
@@ -599,6 +602,7 @@
 +&pcie3 {
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&pcie3_pins>;
++	max-link-width = <1>;
 +	status = "okay";
 +};
 +
@@ -607,6 +611,20 @@
 +	switch_hrstn {
 +		gpio-hog;
 +		gpios = <4 GPIO_ACTIVE_HIGH>;
++		output-high;
++	};
++
++	/* 1L0 0=key-b (CN15), 1=key-m (CN13) */
++	pcie-2-hog {
++		gpio-hog;
++		gpios = <79 GPIO_ACTIVE_HIGH>;
++		output-high;
++	};
++
++	/* 1L1 0=key-b (CN18), 1=key-m (CN14) */
++	pcie-3-hog {
++		gpio-hog;
++		gpios = <63 GPIO_ACTIVE_HIGH>;
 +		output-high;
 +	};
 +
