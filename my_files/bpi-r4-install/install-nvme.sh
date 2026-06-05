@@ -52,9 +52,9 @@ case "$VARIANT" in
     8) GH_TAG="release-8gb-poe-wired";       ITB_NAME="bpi-r4-poe.itb"; IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-poe-8gb-nvme-img.bin" ;;
     9) GH_TAG="release-8gb-wired-unifi";     ITB_NAME="bpi-r4.itb";     IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-8gb-nvme-img.bin" ;;
    10) GH_TAG="release-8gb-poe-wired-unifi"; ITB_NAME="bpi-r4-poe.itb"; IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-poe-8gb-nvme-img.bin" ;;
-   11) GH_TAG="release-pro-standard";        ITB_NAME="bpi-r4-pro.itb"; IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-pro-nvme-img.bin"; IS_PRO=1 ;;
-   12) GH_TAG="release-pro-wired";           ITB_NAME="bpi-r4-pro.itb"; IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-pro-nvme-img.bin"; IS_PRO=1 ;;
-   13) GH_TAG="release-pro-unifi";           ITB_NAME="bpi-r4-pro.itb"; IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-pro-nvme-img.bin"; IS_PRO=1 ;;
+   11) GH_TAG="release-pro-8x-standard";     ITB_NAME="bpi-r4-pro-8x.itb"; IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-pro-8x-nvme-img.bin"; IS_PRO=1 ;;
+   12) GH_TAG="release-pro-8x-wired";        ITB_NAME="bpi-r4-pro-8x.itb"; IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-pro-8x-nvme-img.bin"; IS_PRO=1 ;;
+   13) GH_TAG="release-pro-8x-unifi";        ITB_NAME="bpi-r4-pro-8x.itb"; IMG_NAME="openwrt-mediatek-filogic-bananapi_bpi-r4-pro-8x-nvme-img.bin"; IS_PRO=1 ;;
     *)
         printf "\n${RED}ERROR: Invalid choice!${NC}\n\n"
         exit 1
@@ -230,8 +230,8 @@ case "$USE_LOCAL" in
     2)
         printf "\n        INFO: Using local files from /tmp\n"
         printf "        Checking files...\n"
-        ITB="/tmp/openwrt-mediatek-filogic-bananapi_bpi-r4-squashfs-sysupgrade.itb"
-        IMG="/tmp/openwrt-mediatek-filogic-bananapi_bpi-r4-nvme-img.bin"
+        ITB="/tmp/${ITB_NAME}"
+        IMG="/tmp/${IMG_NAME}"
         if [ ! -f "$ITB" ]; then
             printf "${RED}ERROR: %s not found!${NC}\n" "$ITB"; exit 1
         fi
@@ -353,7 +353,7 @@ printf "        OK\n\n"
 printf "        Writing kernel to p1...\n"
 mkdir -p /mnt/nvme
 mount /dev/nvme0n1p1 /mnt/nvme
-cp "$ITB" /mnt/nvme/bpi-r4.itb
+cp "$ITB" /mnt/nvme/"${ITB_NAME}"
 sync
 umount /dev/nvme0n1p1
 printf "        OK -- kernel written to p1\n\n"
