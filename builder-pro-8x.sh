@@ -51,6 +51,7 @@ python3 -c 'content=open("target/linux/mediatek/filogic/config-6.12").read(); co
 \cp -r ../my_files/luci-app-modemdata-main/luci-app-modemdata/ feeds/luci/applications
 \cp -r ../my_files/luci-app-lite-watchdog/ feeds/luci/applications
 \cp -r ../my_files/luci-app-sms-tool-js-main/luci-app-sms-tool-js/ feeds/luci/applications
+\cp -r ../my_files/luci-app-wifimgr/ feeds/luci/applications/
 
 mkdir -p files/etc/uci-defaults
 \cp -r ../my_files/99-set-hostname files/etc/uci-defaults/
@@ -80,6 +81,7 @@ chmod +x files/root/install-dir/install-nvme-unifi.sh
 chmod -R 755 package/network/utils/uqmi/files/lib/netifd/proto
 chmod -R 755 feeds/luci/applications/luci-app-modemdata/root
 chmod -R 755 feeds/luci/applications/luci-app-sms-tool-js/root
+chmod -R 755 feeds/luci/applications/luci-app-wifimgr/root
 chmod -R 755 feeds/packages/utils/modemdata/files/usr/share
 
 \cp -r ../configs/my_defconfig-8x-full .config
