@@ -16,7 +16,7 @@
  static void sfp_quirk_2500basex(const struct sfp_eeprom_id *id,
  				struct sfp_module_caps *caps)
 
-@@ -618,7 +627,7 @@ static const struct sfp_quirk sfp_quirks[] = {
+@@ -618,4 +627,4 @@ static const struct sfp_quirk sfp_quirks[] = {
  	SFP_QUIRK_F("ETU", "ESP-T5-R", sfp_fixup_rollball_cc),
  	SFP_QUIRK_F("OEM", "SFP-10G-T-I", sfp_fixup_rollball),
 -	SFP_QUIRK_F("OEM", "SFP-10G-T", sfp_fixup_rollball_cc),
