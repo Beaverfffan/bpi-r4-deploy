@@ -47,7 +47,7 @@ jobs:
             echo "BUILDER=./builder-pro-8x.sh" >> $GITHUB_ENV
             echo "RELEASE_TAGS=release-pro-standard" >> $GITHUB_ENV
           elif [ "$VARIANT" = "pro-wired" ]; then
-            echo "BUILDER=./builder-pro-wired-universal.sh" >> $GITHUB_ENV
+            echo "BUILDER=./builder-pro-8x-wired.sh" >> $GITHUB_ENV
             echo "RELEASE_TAGS=release-pro-wired release-pro-unifi" >> $GITHUB_ENV
           else
             echo "BUILDER=./builder-wifimgr-universal.sh" >> $GITHUB_ENV
