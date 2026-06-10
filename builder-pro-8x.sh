@@ -77,7 +77,7 @@ chmod +x files/root/install-dir/install-emmc.sh
 \cp ../my_files/bpi-r4-install/install-nvme-unifi.sh files/root/install-dir/install-nvme-unifi.sh
 chmod +x files/root/install-dir/install-nvme-unifi.sh
 
-#\cp -r ../my_files/luci-app-wifimgr/ package/luci-app-wifimgr/
+\cp -r ../my_files/luci-app-wifimgr/ package/luci-app-wifimgr/
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
@@ -90,7 +90,7 @@ chmod +x files/root/install-dir/install-nvme-unifi.sh
 chmod -R 755 package/network/utils/uqmi/files/lib/netifd/proto
 chmod -R 755 feeds/luci/applications/luci-app-modemdata/root
 chmod -R 755 feeds/luci/applications/luci-app-sms-tool-js/root
-#chmod -R 755 package/luci-app-wifimgr/root
+chmod -R 755 package/luci-app-wifimgr/root
 chmod -R 755 feeds/packages/utils/modemdata/files/usr/share
 
 \cp -r ../configs/my_defconfig-8x-full .config
