@@ -90,7 +90,7 @@ chmod +x files/root/install-dir/install-nvme-unifi.sh
 chmod -R 755 package/network/utils/uqmi/files/lib/netifd/proto
 chmod -R 755 feeds/luci/applications/luci-app-modemdata/root
 chmod -R 755 feeds/luci/applications/luci-app-sms-tool-js/root
-chmod -R 755 package/luci-app-wifimgr/root
+#chmod -R 755 package/luci-app-wifimgr/root
 chmod -R 755 feeds/packages/utils/modemdata/files/usr/share
 
 \cp -r ../configs/my_defconfig-8x-full .config
