@@ -615,7 +615,7 @@
 +boot_production=led $bootled_pwr on ; run ubi_read_production && bootm $loadaddr#$bootconf#$bootconf_extra ; led $bootled_pwr off
 +boot_recovery=led $bootled_rec on ; run ubi_read_recovery && bootm $loadaddr#$bootconf ; led $bootled_rec off
 +boot_ubi=run boot_production ; run boot_recovery
-+boot_nvme=pci enum ; nvme scan ; if nvme dev 0 && ext4load nvme 0:1 $loadaddr /bpi-r4-pro-8x.itb ; then led $bootled_pwr on ; bootm $loadaddr#$bootconf#mt7988a-bananapi-bpi-r4-pro-8x-nvme-${nvme_slot} ; fi
++boot_nvme=pci enum ; nvme scan ; if nvme dev 0 && ext4load nvme 0:1 $loadaddr /bpi-r4-pro-8x.itb ; then led $bootled_pwr on ; setenv nvme_boot 1 ; bootm $loadaddr#$bootconf#mt7988a-bananapi-bpi-r4-pro-8x-nvme-${nvme_slot} ; setenv nvme_boot ; fi
 +nvme_slot=ssd2
 +boot_tftp_forever=led $bootled_rec on ; while true ; do run boot_tftp_recovery ; sleep 1 ; done
 +boot_tftp_production=tftpboot $loadaddr $bootfile_upg && env exists replacevol && iminfo $loadaddr && run ubi_write_production ; if env exists noboot ; then else bootm $loadaddr#$bootconf#$bootconf_extra ; fi
