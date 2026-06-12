@@ -633,11 +633,11 @@
 +		output-high;
 +	};
 +
-+	/* 1L0: LOW=CN15 (B-key LTE), HIGH=CN13 (empty M-key) */
++	/* 1L0: HIGH=CN13 (empty M-key); USB3.2 SS away from CN15 → CN15 uses USB2.0 only */
 +	pcie-2-hog {
 +		gpio-hog;
 +		gpios = <79 GPIO_ACTIVE_HIGH>;
-+		output-low;
++		output-high;
 +	};
 +
 +	/* 1L1 0=key-b (CN18), 1=key-m (CN14) */
