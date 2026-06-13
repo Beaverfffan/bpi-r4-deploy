@@ -76,6 +76,12 @@ chmod +x files/root/install-dir/install-nvme.sh
 chmod +x files/root/install-dir/install-emmc.sh
 \cp ../my_files/bpi-r4-install/install-nvme-unifi.sh files/root/install-dir/install-nvme-unifi.sh
 chmod +x files/root/install-dir/install-nvme-unifi.sh
+\cp ../my_files/bpi-r4-install/install-menu.sh files/root/install-dir/install-menu.sh
+chmod +x files/root/install-dir/install-menu.sh
+\cp ../my_files/bpi-r4-install/boot-nvme files/root/install-dir/boot-nvme
+chmod +x files/root/install-dir/boot-nvme
+\cp ../my_files/bpi-r4-pro/files/usr/sbin/boot-nand files/usr/sbin/boot-nand
+chmod +x files/usr/sbin/boot-nand
 
 #\cp -r ../my_files/luci-app-wifimgr/ package/luci-app-wifimgr/
 
