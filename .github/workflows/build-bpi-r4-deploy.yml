@@ -174,8 +174,8 @@ jobs:
             cd ..
           }
 
-          # Standard R4 variants (not built by pro/pro-wired)
-          if [ "$VARIANT" != "pro" ] && [ "$VARIANT" != "pro-wired" ]; then
+          # Standard R4 variants (not built by pro/pro-wired/pro-unifi)
+          if [ "$VARIANT" != "pro" ] && [ "$VARIANT" != "pro-wired" ] && [ "$VARIANT" != "pro-unifi" ]; then
             # 4GB non-poe
             make_release_dir rel-4gb \
               "openwrt-mediatek-filogic-bananapi_bpi-r4-squashfs-sysupgrade.itb" \
@@ -214,7 +214,7 @@ jobs:
           fi
 
           # Pro variants
-          if [ "$VARIANT" = "pro" ] || [ "$VARIANT" = "pro-wired" ]; then
+          if [ "$VARIANT" = "pro" ] || [ "$VARIANT" = "pro-wired" ] || [ "$VARIANT" = "pro-unifi" ]; then
             make_release_dir rel-pro \
               "openwrt-mediatek-filogic-bananapi_bpi-r4-pro-8x-squashfs-sysupgrade.itb" \
               "bpi-r4-pro-8x.itb" \
@@ -249,11 +249,14 @@ jobs:
             done
           fi
 
-          # Pro wired + UniFi = same Pro firmware + UniFi scripts
+          # Pro wired = same Pro firmware, separate release
           if [ "$VARIANT" = "pro-wired" ]; then
             cp -r rel-pro rel-pro-wired
-            cp -r rel-pro rel-pro-unifi
+          fi
 
+          # Pro UniFi = Pro firmware + UniFi scripts
+          if [ "$VARIANT" = "pro-wired" ] || [ "$VARIANT" = "pro-unifi" ]; then
+            cp -r rel-pro rel-pro-unifi
             for DIR in rel-pro-unifi; do
               cp unifi/unifi-setup.sh             "$DIR/"
               cp unifi/rc.local                   "$DIR/"
