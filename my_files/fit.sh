@@ -48,6 +48,14 @@ export_fitblk_bootdev() {
 
 nvme_do_upgrade() {
 	local itb="$1"
+	local model itb_name
+
+	model=$(cat /proc/device-tree/model 2>/dev/null | tr -d '\0')
+	case "$model" in
+		*PRO-8X*) itb_name="bpi-r4-pro-8x.itb" ;;
+		*R4-POE*) itb_name="bpi-r4-poe.itb" ;;
+		*)        itb_name="bpi-r4.itb" ;;
+	esac
 
 	# Write kernel to p1 (ext4)
 	mkdir -p /mnt/nvme_upgrade
@@ -55,7 +63,7 @@ nvme_do_upgrade() {
 		echo "ERROR: Cannot mount /dev/nvme0n1p1"
 		return 1
 	fi
-	cp "$itb" /mnt/nvme_upgrade/bpi-r4.itb
+	cp "$itb" /mnt/nvme_upgrade/$itb_name
 	sync
 	umount /mnt/nvme_upgrade
 
