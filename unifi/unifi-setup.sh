@@ -125,12 +125,6 @@ ip link set enp0s2 address $ENP0S2_MAC
 ip addr add $ENP0S2_IP dev enp0s2
 ip link set enp0s2 up
 
-# Default route via enp0s2 - CRITICAL for ubnt-tools serialno generation
-# ubnt-tools runs: ip route get 8.8.8.8 -> finds interface -> reads MAC -> serialno
-# Without default route: ip route get returns empty -> serialno empty ->
-# unifi-core fails with "Invalid MAC address"
-ip route add default via $ENP0S2_GW dev enp0s2 2>/dev/null || true
-
 # enp0s1 - dummy secondary interface to mimic real UNVR hardware
 if ip link show enp0s1 > /dev/null 2>&1; then
     ip link del enp0s1 2>/dev/null || true
@@ -276,19 +270,22 @@ printf "${YELLOW}  IMPORTANT: Internet should be disconnected during first setup
 printf "  Disconnect WAN and press Enter to continue, or Ctrl+C to abort...\n"
 read DUMMY
 
+# Add default route via enp0s2 AFTER WAN disconnect - needed for ubnt-tools serialno generation.
+# ubnt-tools: ip route get 8.8.8.8 -> finds enp0s2 -> reads MAC -> generates serialno.
+# Must be added here (not earlier) to avoid ECMP conflict with WAN default route.
+ip route add default via $ENP0S2_GW dev enp0s2 2>/dev/null || true
+
 cd $COMPOSE_DIR && docker-compose up -d
 
-# CRITICAL: default route must be added inside container AFTER it starts
-# Container uses network_mode: host but routes added on host before container
-# start are not visible inside. Must be injected via docker exec after startup.
-# Without this, ubnt-tools inside container cannot find MAC -> serialno empty
-# -> unifi-core fails with "Invalid MAC address"
 printf "\n"
 printf "  Waiting for container to start...\n"
 sleep 30
 
-docker exec unifi-protect ip route add default via $ENP0S2_GW dev enp0s2 2>/dev/null || true
 docker exec unifi-protect systemctl restart unifi-core
+
+# Serialno is now stored - remove temporary default route
+sleep 15
+ip route del default via $ENP0S2_GW dev enp0s2 2>/dev/null || true
 
 # Flag - mark setup as complete
 # rc.local checks for this flag - without it, autostart is skipped on reboot
