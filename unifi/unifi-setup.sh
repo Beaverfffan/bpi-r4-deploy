@@ -91,6 +91,22 @@ uci set firewall.$SECTION.proto='tcp'
 uci set firewall.$SECTION.target='ACCEPT'
 
 uci commit firewall
+
+# Docker bridge forwarding: WAN is eth1 (no bridge), fw4 generates "oifname br-wan" which never matches.
+# UCI include with chain-prepend ensures these rules survive every fw4 reload and reboot.
+cat > /etc/docker-wan-forward.nft << 'EOF'
+iifname "br-*" oifname "eth1" accept comment "Docker containers to WAN"
+iifname "br-*" oifname "br-*" accept comment "Bridge inter-forward (LAN to Docker, Docker to LAN)"
+EOF
+
+SECTION=$(uci add firewall include)
+uci set firewall.$SECTION.name='docker_wan'
+uci set firewall.$SECTION.path='/etc/docker-wan-forward.nft'
+uci set firewall.$SECTION.type='nftables'
+uci set firewall.$SECTION.position='chain-prepend'
+uci set firewall.$SECTION.chain='forward'
+uci commit firewall
+
 fw4 reload
 
 printf "        OK\n\n"
@@ -148,27 +164,9 @@ chmod +x "$NVME_DATA/.rc-network.sh"
 
 printf "        OK\n\n"
 
-# || 6. Hotplug handler - restore Docker nft rules after WAN reconnect |||||||
-#
-# fw4 reload (triggered by WAN ifup) clears custom nft rules used by Docker
-# bridge network. This hook restores them automatically via rc-network.sh.
-
-printf "[ 6/8 ] Installing hotplug handler...\n"
-
-mkdir -p /etc/hotplug.d/iface
-cat > /etc/hotplug.d/iface/99-docker-nft << 'EOF'
-#!/bin/sh
-# Restore Docker bridge nftables rules after WAN reconnect.
-# OpenWrt fw4 reload (triggered by WAN ifup events) clears custom nft rules
-# used by the Docker bridge network. This hook restores them automatically.
-[ "$INTERFACE" = "wan" ] || exit 0
-[ "$ACTION" = "ifup" ] || exit 0
-sleep 3
-/mnt/nvme0n1p3/.rc-network.sh > /dev/null 2>&1
-EOF
-chmod +x /etc/hotplug.d/iface/99-docker-nft
-
-printf "        OK\n\n"
+# || 6. (reserved) |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# Docker nft hotplug handler removed: firewall rules are now UCI-based
+# (config include docker_wan) and survive fw4 reload without a hotplug hook.
 
 # || 7. Docker image ||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
