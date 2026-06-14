@@ -615,7 +615,10 @@
 +	status = "okay";
 +};
 +
-+/* pcie2 disabled: FN990 uses USB mode; PCIe clock on CN15 would force PCIe mode */
++/* M.2 key-B CN15 / key-M CN13 - CN15 USB via VIA Labs hub (ssusb0 upstream), CN13 empty */
++&pcie2 {
++	status = "disabled";
++};
 +
 +/* M.2 key-M SSD */
 +&pcie3 {
@@ -630,13 +633,6 @@
 +	switch_hrstn {
 +		gpio-hog;
 +		gpios = <4 GPIO_ACTIVE_HIGH>;
-+		output-high;
-+	};
-+
-+	/* 1L0: HIGH=CN13 (empty M-key); USB3.2 SS away from CN15 → CN15 uses USB2.0 only */
-+	pcie-2-hog {
-+		gpio-hog;
-+		gpios = <79 GPIO_ACTIVE_HIGH>;
 +		output-high;
 +	};
 +
@@ -672,6 +668,9 @@
 +};
 +
 +&ssusb0 {
++	/* U3P (SuperSpeed) disabled: SerDes shared with COMBO PHY PCIe (pcie1 L0) */
++	phys = <&xphyu2port0 PHY_TYPE_USB2>;
++	mediatek,u3p-dis-msk = <1>;
 +	status = "okay";
 +};
 +
