@@ -4,7 +4,12 @@
 
 set -e
 
-NAND_IMG="/root/install-dir/.snand-img.bin"
+GH_USER="woziwrt"
+GH_REPO="bpi-r4-deploy"
+GH_TAG="release-pro-8x-standard"
+SNAND_FILENAME="bpi-r4-pro-snand-img.bin"
+SNAND_URL="https://github.com/${GH_USER}/${GH_REPO}/releases/download/${GH_TAG}/${SNAND_FILENAME}"
+NAND_IMG="/root/install-dir/${SNAND_FILENAME}"
 
 echo ""
 echo "=================================================="
@@ -22,14 +27,23 @@ fi
 echo "OK: System is running from SD card."
 echo ""
 
-# Verify image exists
+# Download image from GitHub if not present locally
 if [ ! -f "${NAND_IMG}" ]; then
-    echo "ERROR: Image file not found: ${NAND_IMG}"
-    echo "       Copy bpi-r4-pro-snand-img.bin to ${INSTALL_DIR}/"
-    exit 1
+    echo "Image not found locally. Downloading from GitHub..."
+    echo "  ${SNAND_URL}"
+    echo ""
+    mkdir -p "$(dirname ${NAND_IMG})"
+    wget -O "${NAND_IMG}" "${SNAND_URL}"
+    if [ $? -ne 0 ] || [ ! -s "${NAND_IMG}" ]; then
+        echo ""
+        echo "ERROR: Download failed!"
+        rm -f "${NAND_IMG}"
+        exit 1
+    fi
+    echo ""
 fi
 
-echo "OK: Pro 8X image found ($(du -h ${NAND_IMG} | cut -f1))."
+echo "OK: NAND image ready ($(du -h ${NAND_IMG} | cut -f1))."
 echo ""
 
 # Verify NAND device is available
@@ -47,7 +61,7 @@ echo "         Press ENTER to continue or CTRL+C to cancel."
 read _
 
 echo ""
-echo "Flashing Pro 8X image to NAND..."
+echo "Flashing rescue system to NAND..."
 mtd -e nand write "${NAND_IMG}" nand
 
 echo ""

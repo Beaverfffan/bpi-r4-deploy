@@ -607,7 +607,7 @@
 +	status = "okay";
 +};
 +
-+/* M.2 key-B CN15 / key-M CN13 - CN15 USB via VIA Labs hub (ssusb1), CN13 empty */
++/* M.2 key-B CN15 / key-M CN13 - CN15 USB via VIA Labs hub (ssusb0 upstream), CN13 empty */
 +&pcie2 {
 +	status = "disabled";
 +};
@@ -626,13 +626,6 @@
 +		gpio-hog;
 +		gpios = <4 GPIO_ACTIVE_HIGH>;
 +		output-high;
-+	};
-+
-+	/* 1L0 0=key-b (CN15), 1=key-m (CN13) - route to CN15 for LTE */
-+	pcie-2-hog {
-+		gpio-hog;
-+		gpios = <79 GPIO_ACTIVE_HIGH>;
-+		output-low;
 +	};
 +
 +	/* 1L1 0=key-b (CN18), 1=key-m (CN14) */
@@ -667,6 +660,9 @@
 +};
 +
 +&ssusb0 {
++	/* U3P (SuperSpeed) disabled: SerDes shared with COMBO PHY PCIe (pcie1 L0) */
++	phys = <&xphyu2port0 PHY_TYPE_USB2>;
++	mediatek,u3p-dis-msk = <1>;
 +	status = "okay";
 +};
 +
