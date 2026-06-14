@@ -1,6 +1,6 @@
 --- /dev/null	2026-06-03 07:32:46.481863000 +0200
 +++ b/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-pro-8x.dts	2026-06-03 07:32:37.479298898 +0200
-@@ -0,0 +1,797 @@
+@@ -0,0 +1,790 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
 +/*
 + * Copyright (C) 2022 MediaTek Inc.
@@ -612,9 +612,9 @@
 +	status = "disabled";
 +};
 +
-+/* M.2 key-B CN15 / key-M CN13 - COMBO USB3.2 via GPIO79=LOW to CN15 */
++/* M.2 key-B CN15 - direct PCIe path, provides PERST# for modem boot */
 +&pcie2 {
-+	status = "disabled";
++	status = "okay";
 +};
 +
 +/* M.2 key-M SSD */
@@ -631,13 +631,6 @@
 +		gpio-hog;
 +		gpios = <4 GPIO_ACTIVE_HIGH>;
 +		output-high;
-+	};
-+
-+	/* 1L0 0=key-b (CN15), 1=key-m (CN13) - route COMBO USB3.2 to CN15 for LTE */
-+	pcie-2-hog {
-+		gpio-hog;
-+		gpios = <79 GPIO_ACTIVE_HIGH>;
-+		output-low;
 +	};
 +
 +	/* 1L1 0=key-b (CN18), 1=key-m (CN14) */
