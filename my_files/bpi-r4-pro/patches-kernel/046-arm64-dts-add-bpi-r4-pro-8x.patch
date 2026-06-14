@@ -1,6 +1,6 @@
 --- /dev/null	2026-06-03 07:32:46.481863000 +0200
 +++ b/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-pro-8x.dts	2026-06-03 07:32:37.479298898 +0200
-@@ -0,0 +1,798 @@
+@@ -0,0 +1,792 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
 +/*
 + * Copyright (C) 2022 MediaTek Inc.
@@ -610,12 +610,6 @@
 +/* COMBO PCIe disabled: SerDes shared with ssusb0 USB3.2 - CN15 uses USB only */
 +&pcie1 {
 +	status = "disabled";
-+};
-+
-+/* M.2 key-B CN15 - COMBO PCIe via GPIO79=HIGH switch, provides PERST# for modem boot */
-+&pcie2 {
-+	max-link-width = <1>;
-+	status = "okay";
 +};
 +
 +/* M.2 key-M SSD */
