@@ -1,6 +1,6 @@
 --- /dev/null	2026-06-03 07:32:46.481863000 +0200
 +++ b/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4-pro-8x.dts	2026-06-03 07:32:37.479298898 +0200
-@@ -0,0 +1,792 @@
+@@ -0,0 +1,785 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
 +/*
 + * Copyright (C) 2022 MediaTek Inc.
@@ -626,13 +626,6 @@
 +		gpio-hog;
 +		gpios = <4 GPIO_ACTIVE_HIGH>;
 +		output-high;
-+	};
-+
-+	/* GPIO79: COMBO PCIe switch - input lets hardware pull-down decide */
-+	pcie-2-hog {
-+		gpio-hog;
-+		gpios = <79 GPIO_ACTIVE_HIGH>;
-+		input;
 +	};
 +
 +	/* 1L1 0=key-b (CN18), 1=key-m (CN14) */
