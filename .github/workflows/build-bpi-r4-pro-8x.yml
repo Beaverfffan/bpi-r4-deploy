@@ -50,7 +50,7 @@ jobs:
 
       - name: Load build versions
         run: |
-          cat build-versions.env >> $GITHUB_ENV
+          grep -v '^\s*#' build-versions.env | grep -v '^\s*$' >> $GITHUB_ENV
           [ -n "${{ github.event.inputs.openwrt_commit }}" ] && echo "OPENWRT_COMMIT=${{ github.event.inputs.openwrt_commit }}" >> $GITHUB_ENV || true
           [ -n "${{ github.event.inputs.mtk_commit }}" ] && echo "MTK_COMMIT=${{ github.event.inputs.mtk_commit }}" >> $GITHUB_ENV || true
 
