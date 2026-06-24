@@ -3,6 +3,7 @@
 'require poll';
 'require wifimgr/layer2 as layer2';
 'require wifimgr/layer3 as layer3';
+'require wifimgr/linkpolicy as linkpolicy';
 
 // ── BAND METADATA ────────────────────────────────────────────────────────────
 
@@ -51,6 +52,7 @@ var _pendingTxMode  = null; // user-selected TX mode not yet saved to UCI — su
 var _signalHistory  = {}; // ifname → Array<number|null> ring buffer (last 20 samples)
 var _utilHistory    = {}; // radio_id → Array<number|null> ring buffer (last 20 samples)
 var _tpBufs        = {}; // radio_id → { rx:[], tx:[], prev:null } — survives poll re-renders
+var _steerdData    = null; // cached steerd status { running, pid, log[] }
 var _rssiMloBufs   = {}; // ifname → { link_id: Array<number|null> } — per-link RSSI history
 
 // ── STATIC TAB LIST ───────────────────────────────────────────────────────────
@@ -60,7 +62,8 @@ var TAB_DEFS = [
     { id: 'networks',    label: 'Networks' },
     { id: 'radios',      label: 'Radios' },
     { id: 'clients',     label: 'Clients' },
-    { id: 'diagnostics', label: 'Diagnostics' }
+    { id: 'diagnostics', label: 'Diagnostics' },
+    { id: 'link-policy', label: 'Link Policy' }
 ];
 
 // ── DOM HELPERS ───────────────────────────────────────────────────────────────
@@ -2844,12 +2847,20 @@ function renderDiagnostics(diag) {
 
 // tabDefs replaced by static TAB_DEFS constant defined in module state section
 
+function loadSteerd() {
+    layer3.load_steerd(_data ? _data.clients : []).then(function(d) {
+        _steerdData = d;
+        if (_tab === 'link-policy') refreshTab('link-policy');
+    });
+}
+
 function renderTab(id, data) {
     switch (id) {
         case 'networks':    return renderNetworks(data);
         case 'radios':      return renderRadios(data);
         case 'clients':     return renderClients(data);
         case 'diagnostics': return renderDiagnostics(_diag);
+        case 'link-policy': return linkpolicy.render(_steerdData, data, loadSteerd);
     }
     return node('div', {});
 }
@@ -2868,7 +2879,10 @@ function activateTab(id) {
 }
 
 function refreshNav(data) {
-    // All tabs are always visible with the static tab list
+    var hasMloAp = ((data && data.mlds) || []).some(function(m) { return m.mode === 'ap'; });
+    var lpBtn = _tabNavBtns['link-policy'];
+    if (lpBtn) lpBtn.style.display = hasMloAp ? '' : 'none';
+    if (_tab === 'link-policy' && !hasMloAp) activateTab('networks');
     if (!TAB_DEFS.some(function(t) { return t.id === _tab; })) activateTab('networks');
 }
 
@@ -2960,6 +2974,7 @@ return view.extend({
                     (Date.now() - _lastFormTouch < 15000);
                 if (!editing) refreshTab(_tab);
                 if (_tab === 'diagnostics' && (_diagTs === 0 || Date.now() - _diagTs > 30000)) loadDiag();
+                if (_tab === 'link-policy') loadSteerd();
             });
         }, 10);
 

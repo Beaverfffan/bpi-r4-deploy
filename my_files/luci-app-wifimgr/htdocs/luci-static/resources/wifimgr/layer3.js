@@ -198,12 +198,50 @@ async function wizard_country(country) {
     return { ok: true, restartRequired: 'reboot', errors: [] };
 }
 
+// --- STEERD ---
+
+async function load_steerd(clients) {
+    const [statusRes, noiseRes, modeRes] = await Promise.all([
+        layer2.steerd_get_status(),
+        layer2.iw_survey_noise(),
+        layer2.steerd_get_mode()
+    ]);
+    const sd = statusRes.ok
+        ? statusRes.data
+        : { running: false, pid: null, log: [], script_present: false };
+    const noise = noiseRes.ok ? noiseRes.data : {};
+    const mode = modeRes.ok ? modeRes.data : 'auto';
+
+    // Fetch Neg-TTLM for each MLMR client (max_simul_links > 1) in parallel
+    const mlmrClients = (clients || []).filter(function(c) { return c.is_mld && c.max_simul_links > 1; });
+    const neg_ttlm = {};
+    await Promise.all(mlmrClients.map(async function(c) {
+        const res = await layer2.hostapd_get_neg_ttlm('ap-mld-1', c.mac);
+        neg_ttlm[c.mac] = res.ok ? res.data : { active: false, tids: [] };
+    }));
+
+    return Object.assign({}, sd, { noise, neg_ttlm, mode });
+}
+
+async function steerd_start() {
+    return layer2.steerd_start();
+}
+
+async function steerd_stop() {
+    return layer2.steerd_stop();
+}
+
+async function steerd_set_mode(mode) {
+    return layer2.steerd_set_mode(mode);
+}
+
 // --- MODULE EXPORT ---
 
 const Layer3 = {
     load_all, load_diag, load_channels, scan,
     start_apply, poll_apply,
-    wizard_ap, wizard_mlo, wizard_sta, wizard_relayd, wizard_repeater, wizard_country
+    wizard_ap, wizard_mlo, wizard_sta, wizard_relayd, wizard_repeater, wizard_country,
+    load_steerd, steerd_start, steerd_stop, steerd_set_mode
 };
 
 return baseclass.extend(Layer3);

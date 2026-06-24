@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# Validated source commits (v1.1.1, 2026-05-14):
-#   OpenWrt:  13ff2256e5dd9bc070f9a9c6a673bff4a9191837  (openwrt-25.12)
-#   MTK SDK:  dceb45f8cb945bce16f0e09f8d2cd974c9f0ce58  (tarball in repo-cache/mtk-openwrt-feeds.tar.gz)
-OPENWRT_COMMIT=${OPENWRT_COMMIT:-13ff2256e5dd9bc070f9a9c6a673bff4a9191837}
+# BUMP TEST 2026-06-23 (zaloha: .bak-3f8797ce-6.12.92):
+#   OpenWrt:  7b8ce1e0951cf3f8944da4ea48ef21af76da0812  (openwrt-25.12 HEAD = kernel 6.12.93)
+#   MTK SDK:  42c9ff6569658fd5a71944e25f5fe7b4b4e21437  (github git01 HEAD, clone misto tarballu)
+OPENWRT_COMMIT=${OPENWRT_COMMIT:-7b8ce1e0951cf3f8944da4ea48ef21af76da0812}
 
 rm -rf openwrt
 rm -rf mtk-openwrt-feeds
@@ -12,14 +12,21 @@ rm -rf mtk-openwrt-feeds
 git clone --branch openwrt-25.12 https://git.openwrt.org/openwrt/openwrt.git openwrt
 cd openwrt; git checkout ${OPENWRT_COMMIT}; cd -;
 
-tar xzf repo-cache/mtk-openwrt-feeds.tar.gz
-mv mtk-clone mtk-openwrt-feeds
+# BUMP TEST 2026-06-23: tarball nahrazen cerstvym clone z MTK GitHub (vetev git01 = nase linie)
+#tar xzf /home/ipsec/mtk-feeds-cache.tar.gz
+git clone --branch git01 https://github.com/mediatek/mtk-openwrt-feeds mtk-openwrt-feeds
+( cd mtk-openwrt-feeds && git checkout 42c9ff6569658fd5a71944e25f5fe7b4b4e21437 )
 
-#\cp -r my_files/feed_revision mtk-openwrt-feeds/autobuild/unified/
 
 \cp -r my_files/999-sfp-10-additional-quirks.patch mtk-openwrt-feeds/25.12/files/target/linux/mediatek/patches-6.12
 \cp -r my_files/999-sfp-11-rtl8261be-mdio-none.patch mtk-openwrt-feeds/25.12/files/target/linux/mediatek/patches-6.12
-\cp -r my_files/999-fix-00-xfrm-sw-sa-offload-ok.patch mtk-openwrt-feeds/25.12/files/target/linux/mediatek/patches-6.12
+\cp -r my_files/999-sfp-22-rtl8261be-boot-1g-reprobe.patch mtk-openwrt-feeds/25.12/files/target/linux/mediatek/patches-6.12
+\cp -r my_files/999-eth-21-mtk-gdm-rx-fsm-reset.patch mtk-openwrt-feeds/25.12/files/target/linux/mediatek/patches-6.12
+#\cp -r my_files/999-sfp-21-rtl8261be-1g-sgmii.patch mtk-openwrt-feeds/25.12/files/target/linux/mediatek/patches-6.12
+#\cp -r my_files/999-sfp-11-rtl8261be-no-rollball.patch mtk-openwrt-feeds/25.12/files/target/linux/mediatek/patches-6.12
+\cp -r my_files/999-fix-01-mac80211-btwt-ap-mode.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/25.12/files/package/kernel/mac80211/patches/subsys/0139-fix-mac80211-btwt-ap-mode-he-btwt-supported.patch
+\cp -r my_files/999-fix-00-xfrm-propagate-einprogress.patch mtk-openwrt-feeds/25.12/files/target/linux/mediatek/patches-6.12
+\cp -r my_files/0264-wpa_s-add-btwt-join-command.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/25.12/files/package/network/services/hostapd/patches/0264-wpa_s-add-btwt-join-command.patch
 
 ### tx_power check Ivan Mironov's patch - for defective BE14 boards with defective eeprom flash
 #\cp -r my_files/100-wifi-mt76-mt7996-Use-tx_power-from-default-fw-if-EEP.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/25.12/files/package/kernel/mt76/patches
@@ -37,6 +44,8 @@ bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt798x
 \cp ../my_files/arm-trusted-firmware-mediatek-Makefile package/boot/arm-trusted-firmware-mediatek/Makefile
 
 echo "CONFIG_BLK_DEV_NVME=y" >> target/linux/mediatek/filogic/config-6.12
+#echo "CONFIG_DYNAMIC_DEBUG=y" >> target/linux/mediatek/filogic/config-6.12
+#echo "CONFIG_DYNAMIC_DEBUG_CORE=y" >> target/linux/mediatek/filogic/config-6.12
 
 \cp -r ../my_files/999-fitblk-02-w-add-bpi-r4-nvme-fitblk.patch target/linux/mediatek/patches-6.12
 
@@ -73,3 +82,4 @@ echo "CONFIG_PACKAGE_trusted-firmware-a-mt7988-spim-nand-ubi-comb-4bg=y" >> .con
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt798x_rfb-wifi7_nic build
 
 
+cp openwrt/bin/targets/mediatek/filogic/openwrt-mediatek-filogic-bananapi_bpi-r4-squashfs-sysupgrade.itb /home/ipsec/latest-sysupgrade.itb 2>/dev/null || true
