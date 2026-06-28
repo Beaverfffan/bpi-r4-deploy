@@ -21,6 +21,10 @@ sed -i 's/@@PKG_VERSION@@/$(PKG_VERSION)/' \
 	"$${IPKG_INSTROOT}/www/luci-static/resources/view/wifimgr/index.js" 2>/dev/null
 [ -x "$${IPKG_INSTROOT}/etc/init.d/mlo-steerd" ] && \
 	"$${IPKG_INSTROOT}/etc/init.d/mlo-steerd" enable
+# First-boot defaults (country + factory SSID security) run from a late init.d
+# service so the wireless config already exists when it runs.
+[ -x "$${IPKG_INSTROOT}/etc/init.d/wifimgr-defaults" ] && \
+	"$${IPKG_INSTROOT}/etc/init.d/wifimgr-defaults" enable
 exit 0
 endef
 
